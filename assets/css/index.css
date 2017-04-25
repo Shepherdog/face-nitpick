@@ -1,0 +1,123 @@
+html {
+  font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.button {
+  background-color: transparent;
+  border: 0.1rem solid #9b4dca;
+  border-radius: .4rem;
+  color: #9b4dca;
+  font-size: 1.4rem;
+  font-weight: 700;
+  height: 4.5rem;
+  line-height: 4.5rem;
+  letter-spacing: .1rem;
+  padding: 0 2.0rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all .05s linear;
+}
+
+.button:active {
+  font-size: 1.2rem;
+}
+
+#container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.docker {
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, .4);
+}
+
+.draggable {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, .4);
+  border-radius: 10px;
+  float: left;
+}
+.draggable.is-pointer-down, .draggable.is-pointer-up {
+  border: 1px dashed rgba(0, 0, 0, .2);
+  z-index: 2; /* above other draggies */
+}
+.draggable.is-dragging {
+  border: 2px dotted #000;
+  opacity: 1;
+}
+.draggable.is-delete {
+  border-color: rgba(255, 0, 0, 1);
+}
+.draggable.no-border {
+  border-color: transparent;
+}
+
+.trash {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: url(../img/trash.png) no-repeat 0 0;
+  background-position: center;
+  border-radius: 10px;
+  border: 2px dotted #000;
+  float: right;
+  z-index: 1;
+}
+
+.hud {
+  position: relative;
+  height: 3.5rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 3.5rem;
+  background-color: rgba(255, 255, 255, .4);
+}
+
+.hud .score {
+  position: absolute;
+  /*width: 100%;
+  text-align: center;*/
+  left: 10px;
+}
+
+.hud .remainTime {
+  position: absolute;
+  right: 10px;
+}
+/*.hud .remainTime::before {
+  content: url(http://www.easyicon.net/api/resizeApi.php?id=1205924&size=32);
+  margin-right: 5px;
+}*/
+
+.hud .remainTime i.timer {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  margin-right: 6px;
+  background: url(http://www.easyicon.net/api/resizeApi.php?id=1202848&size=28) no-repeat 0 0;
+  background-position: center;
+  vertical-align: text-bottom;
+}

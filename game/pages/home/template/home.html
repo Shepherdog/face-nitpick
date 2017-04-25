@@ -1,0 +1,11 @@
+<div id="container">
+  <a id="start-button" class="button center" @click="start">Play!
+    <input id="file-input" style="display:none;" type="file" @change="getInputImage" accept="image/*">
+  </a>
+  <img id="play-img" class="img-responsive center" :src="imgSrc" v-show="!!imgSrc">
+  <div class="docker"></div>
+  <div class="draggable" data-tag="A"></div>
+  <div class="draggable" data-tag="B"></div>
+  <div class="draggable" data-tag="C"></div>
+  <div class="trash" style="right:10px; bottom:10px;"></div>
+</div>
