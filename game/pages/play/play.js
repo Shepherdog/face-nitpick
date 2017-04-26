@@ -89,7 +89,7 @@ module.exports = {
 					draggable.height(r.h);
 
 					// add sticker
-					draggable.css({'background': `url(../assets/img/mark${markMap[item.type]}.png) no-repeat 0 0`, 'background-position': 'center'});
+					draggable.css({'background': `url(../assets/img/mark${markMap[item.type]}.png) no-repeat`, 'background-position': 'center'});
 					draggable.get(0).dataset.tag = [item.type, item.id].join('-');
 
 					this.markIds.push(item.id);

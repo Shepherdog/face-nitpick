@@ -79,7 +79,7 @@ html {
   position: absolute;
   width: 55px;
   height: 55px;
-  background: url(../img/trash.png) no-repeat 0 0;
+  background: url(../img/trash.png) no-repeat;
   background-position: center;
   border-radius: 10px;
   border: 2px dotted #000;
@@ -117,7 +117,7 @@ html {
   width: 22px;
   height: 22px;
   margin-right: 6px;
-  background: url(http://www.easyicon.net/api/resizeApi.php?id=1202848&size=22) no-repeat 0 0;
+  background: url(http://www.easyicon.net/api/resizeApi.php?id=1202848&size=22) no-repeat;
   background-position: center;
   vertical-align: text-bottom;
 }
