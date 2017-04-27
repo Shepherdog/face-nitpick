@@ -31,17 +31,17 @@ module.exports = {
 		initButtons: function() {
 			const containerH = $('#container').height();
 			const margin = 10;
-			const markMap = {A: 1, B: 2, C: 3};
+			const markMap = { A: 1, B: 2, C: 3 };
 
 			$('.draggable').each((idx, ele) => {
 				// adjust position
 				let x = $(ele).width() * idx + margin * (idx + 1);
 				let y = containerH - $(ele).height() - margin;
-				$(ele).css({'left': x + 'px',  'top': y + 'px'});
+				$(ele).css({ 'left': x + 'px', 'top': y + 'px' });
 
 				// add icon
 				let type = ele.dataset.tag;
-				$(ele).css({'background': `url(../assets/img/mark${markMap[type]}.png) no-repeat center`, 'background-size': 'contain'});
+				$(ele).css({ 'background': `url(../assets/img/mark${markMap[type]}.png) no-repeat center`, 'background-size': 'contain' });
 
 				// animation
 				$(ele).addClass('animated slideInLeft');
@@ -59,7 +59,7 @@ module.exports = {
 				this.draggables.off('pointerUp', this.bindPointerUp);
 			}
 
-			this.draggables = $('.draggable').draggabilly({containment: true});
+			this.draggables = $('.draggable').draggabilly({ containment: true });
 			this.draggables.on('pointerDown', this.bindPointerDown);
 			this.draggables.on('pointerMove', this.bindPointerMove);
 			this.draggables.on('pointerUp', this.bindPointerUp);
@@ -109,12 +109,12 @@ module.exports = {
 			const w = trash.width(), h = trash.height();
 			const x0 = pointer.pageX, y0 = pointer.pageY;
 
-			return utils.rectContainsPoint({x, y, w, h}, {x0, y0});
+			return utils.rectContainsPoint({ x, y, w, h }, { x0, y0 });
 		},
 
 		start: function(event) {
 			$('#file-input').trigger('click');
-			
+
 			// this.imgSrc = 'http://news.xinhuanet.com/fashion/2015-02/12/127483653_14236217073281n.jpg';
 		},
 
@@ -123,7 +123,7 @@ module.exports = {
 
 			let fr = new FileReader();
 			fr.readAsDataURL(file);
-			
+
 			fr.onprogress = (evt) => {
 				$('#start-button').val(`${evt.loaded / evt.total * 100} %`);
 			}
@@ -146,7 +146,7 @@ module.exports = {
 
 					this.addWxShare(() => {
 						this.updateGameData();
-						notie.alert({type: 1, text: '分享成功！'});
+						notie.alert({ type: 1, text: '分享成功！' });
 					});
 				}, (error) => {
 					console.error(JSON.stringify(error));
@@ -172,7 +172,7 @@ module.exports = {
 					ele = $(ele);
 					let x = (ele.position().left - ox) * ratioW | 0, y = (ele.position().top - oy) * ratioH | 0;
 					let w = ele.width(), h = ele.height();
-					map.push({type, id, x, y, w, h});
+					map.push({ type, id, x, y, w, h });
 				}
 			});
 
@@ -212,7 +212,7 @@ module.exports = {
 					timestamp: timestamp,
 					nonceStr: '1234567890',
 					signature: signature,
-					jsApiList: [ 'checkJsApi', 'showMenuItems', 'onMenuShareAppMessage', 'onMenuShareTimeline' ],
+					jsApiList: ['checkJsApi', 'showMenuItems', 'onMenuShareAppMessage', 'onMenuShareTimeline'],
 				};
 
 				const shareParam = {
@@ -225,7 +225,7 @@ module.exports = {
 				wx.config(wxConfig);
 				wx.ready(() => {
 					wx.showMenuItems({
-						menuList: [ 'menuItem:share:appMessage', 'menuItem:share:timeline' ]
+						menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline']
 					});
 
 					shareParam = Object.assign(shareParam, {

@@ -1,5 +1,5 @@
 <div id="container">
-  <img id="play-img" class="img-responsive center" :src="imgSrc" v-show="!!imgSrc">
+  <img id="play-img" class="img-responsive center" :src="imgSrc" v-show="!!imgSrc" @load="loadGame">
   <div class="hud">
     <label class="score">得分：{{score}}</label>
     <div class="remainTime"><i class="timer"></i><label>{{timeStr}}</label></div>

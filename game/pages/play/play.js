@@ -13,6 +13,7 @@ module.exports = {
 	data: function() {
 		return {
 			draggables: null,
+			gameData: null,
 			imgSrc: '',
 			markIds: [],
 			remainTime: 30,	// seconds
@@ -36,11 +37,9 @@ module.exports = {
 		}
 
 		let query = new AV.Query('GameData');
-		query.get(gameId).then((gameData) => {
-			let img = gameData.get('image').get('url');
-			let map = gameData.get('mapData');
-
-			this.loadGame({img, map});
+		query.get(gameId).then((data) => {
+			this.imgSrc = data.get('image').get('url');
+			this.gameData = data.get('mapData');
 		}, (error) => {
 			console.error(JSON.stringify(error));
 		});
@@ -48,71 +47,83 @@ module.exports = {
 
 	mounted: function() {
 		$('.hud').addClass('animated slideInDown');
-
-		this.countDownTimer = setInterval(() => {
-			this.remainTime --;
-			this.timeStr = utils.formatDate(new Date(this.remainTime * 1000), 'mm:ss');
-
-			if (this.remainTime < 10) {
-				$('.remainTime').css('color', '#f00');
-			}
-
-			if (this.remainTime == 0) {
-				clearInterval(this.countDownTimer);
-				notie.alert({type: 3, text: `时间用完了!<br>你的得分是 ${this.score}`, stay: true});
-			}
-		}, 1000);
 	},
 
 	methods: {
-		loadGame: function(data) {
-			this.imgSrc = data.img;
+		loadGame: function() {
+			this.markIds = [];
 
-			$('#play-img').on('load', () => {
-				const markMap = {A: 1, B: 2, C: 3};
-				const ox = $('#play-img').position().left;
-				const oy = $('#play-img').position().top;
-				const ratioW = $('#play-img').get(0).naturalWidth / $('#play-img').width();
-				const ratioH = $('#play-img').get(0).naturalHeight / $('#play-img').height();
+			const markMap = { A: 1, B: 2, C: 3 };
+			const ox = $('#play-img').position().left;
+			const oy = $('#play-img').position().top;
+			const ratioW = $('#play-img').get(0).naturalWidth / $('#play-img').width();
+			const ratioH = $('#play-img').get(0).naturalHeight / $('#play-img').height();
 
-				data.map.forEach((item) => {
-					let draggable = $('<div class="draggable"></div>');
-					draggable.appendTo('#container');
-					draggable.addClass('no-border');
-
-					// set position
-					let x = item.x / ratioW + ox, y = item.y / ratioH + oy;
-					let w = item.w, h = item.h;
-					let r = utils.rectShrink({x, y, w, h}, w / 2, h / 2);
-					draggable.css({'left': r.x + 'px',  'top': r.y + 'px'});
-					draggable.width(r.w);
-					draggable.height(r.h);
-
-					// add sticker
-					draggable.css({'background': `url(../assets/img/mark${markMap[item.type]}.png) no-repeat center`, 'background-size': 'contain'});
-					draggable.get(0).dataset.tag = [item.type, item.id].join('-');
-
-					this.markIds.push(item.id);
-				});
-
-				this.initGame();
+			$('.draggable').each((idx, ele) => {
+				ele.remove();
 			});
-		},
 
-		initGame: function() {
+			this.gameData.forEach((item) => {
+				let draggable = $('<div class="draggable"></div>');
+				draggable.appendTo('#container');
+				draggable.addClass('no-border');
+
+				// set position
+				let x = item.x / ratioW + ox, y = item.y / ratioH + oy;
+				let w = item.w, h = item.h;
+				let r = utils.rectShrink({ x, y, w, h }, w / 2, h / 2);
+				draggable.css({ 'left': r.x + 'px', 'top': r.y + 'px' });
+				draggable.width(r.w);
+				draggable.height(r.h);
+
+				// add sticker
+				draggable.css({ 'background': `url(../assets/img/mark${markMap[item.type]}.png) no-repeat center`, 'background-size': 'contain' });
+				draggable.get(0).dataset.tag = [item.type, item.id].join('-');
+
+				this.markIds.push(item.id);
+			});
+
 			this.draggables = $('.draggable').draggabilly();
 			this.draggables.on('staticClick', this.bindClick);
 			this.draggables.draggabilly('disable');
+
+			this.initGame();
+		},
+
+		initGame: function() {
+			this.remainTime = 30;
+			this.score = 0;
+
+			this.countDownTimer = setInterval(() => {
+				this.remainTime--;
+				this.timeStr = utils.formatDate(new Date(this.remainTime * 1000), 'mm:ss');
+
+				$('.remainTime').css('color', (this.remainTime < 10) ? '#f00' : '#000');
+
+				if (this.remainTime == 0) {
+					clearInterval(this.countDownTimer);
+
+					notie.confirm({
+						text: `时间用完了!<br>你的得分是 ${this.score}`,
+						submitText: '再试一把',
+						cancelText: '不玩了',
+						submitCallback: () => {
+							this.loadGame();
+						},
+						cancelCallback: null
+					});
+				}
+			}, 1000);
 		},
 
 		bindClick: function(event, pointer) {
 			$(event.target).removeClass('no-border');
 			$(event.target).addClass('is-delete');
 
+			const scoreMap = { A: 30, B: 20, C: 10 };
 			const tag = event.target.dataset.tag.split('-');
 			const type = tag[0], id = tag[1];
 			// console.log(`click ${type}-${id}`);
-			const scoreMap = {A: 30, B: 20, C: 10};
 
 			let idx = this.markIds.indexOf(id);
 			if (idx >= 0) {
@@ -127,6 +138,7 @@ module.exports = {
 						text: 'BINGO！你获得了满分！',
 						buttonText: '赞一个',
 						callback: () => {
+							notie.alert({ text: '记得分享给小伙伴们哦！' });
 						}
 					});
 				}
