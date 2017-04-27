@@ -117,7 +117,7 @@ html {
   width: 22px;
   height: 22px;
   margin-right: 6px;
-  background: url(http://www.easyicon.net/api/resizeApi.php?id=1202848&size=72) no-repeat center;
+  background: url(../img/timer.png) no-repeat center;
   background-size: contain;
   vertical-align: text-bottom;
 }
