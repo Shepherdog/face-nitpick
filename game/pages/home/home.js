@@ -41,7 +41,7 @@ module.exports = {
 
 				// add icon
 				let type = ele.dataset.tag;
-				$(ele).css({'background': `url(../assets/img/mark${markMap[type]}.png) no-repeat center`});
+				$(ele).css({'background': `url(../assets/img/mark${markMap[type]}.png) no-repeat center`, 'background-size': 'contain'});
 
 				// animation
 				$(ele).addClass('animated slideInLeft');
