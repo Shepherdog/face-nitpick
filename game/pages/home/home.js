@@ -19,6 +19,7 @@ module.exports = {
 	},
 
 	created: function() {
+		$.getScript('../assets/js/lrz.all.bundle.js');
 		$.getScript('//cdn.bootcss.com/jsSHA/2.0.1/sha1.js');
 	},
 
@@ -100,7 +101,7 @@ module.exports = {
 				});
 			}
 
-			// this.updateGameData();
+			this.showGuideTips();
 		},
 
 		pointerInTrashArea: function(pointer) {
@@ -112,6 +113,16 @@ module.exports = {
 			return utils.rectContainsPoint({ x, y, w, h }, { x0, y0 });
 		},
 
+		showGuideTips: function() {
+			let hasGuide = JSON.parse(localStorage.getItem('hasGuide') || false);
+			if (!hasGuide) {
+				setTimeout(() => {
+					notie.alert({ text: '记得分享给小伙伴们哦！' });
+					localStorage.setItem('hasGuide', 'true');
+				}, 5000);
+			}
+		},
+
 		start: function(event) {
 			$('#file-input').trigger('click');
 
@@ -121,24 +132,38 @@ module.exports = {
 		getInputImage: function(event) {
 			let file = event.target.files[0];
 
-			let fr = new FileReader();
+			/*let fr = new FileReader();
 			fr.readAsDataURL(file);
 
 			fr.onprogress = (evt) => {
 				$('#start-button').val(`${evt.loaded / evt.total * 100} %`);
-			}
-			fr.onload = (evt) => {
-				this.imgSrc = evt.target.result;
-				$('#start-button').remove();
 			};
 
+			fr.onload = (evt) => {
+				let result = evt.target.result;
+				this.imgSrc = result;
+				this.uploadImage(file.name, { base64: result });
+
+				$('#start-button').remove();
+			};*/
+			
+			lrz(file, { width: 750 }).then((rst) => {
+				let result = rst.base64;
+				this.imgSrc = result;
+				this.uploadImage(file.name, { base64: result });
+
+				$('#start-button').remove();
+			});
+		},
+
+		uploadImage: function(fileName, fileData) {
 			if (utils.isWeixin()) {
 				let GameData = AV.Object.extend('GameData');
 
 				let gameData = new GameData();
 				gameData.set('openId', '');
 				// upload the image
-				gameData.set('image', new AV.File(file.name, file));
+				gameData.set('image', new AV.File(fileName, fileData));
 
 				gameData.save().then((data) => {
 					console.log(`image [${file.name}] uploaded`);
