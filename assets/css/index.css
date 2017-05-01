@@ -11,6 +11,7 @@ html {
   position: absolute;
   top: 50%;
   left: 50%;
+  -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
 
@@ -29,6 +30,7 @@ html {
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
+  -webkit-transition: all .05s linear;
   transition: all .05s linear;
 }
 

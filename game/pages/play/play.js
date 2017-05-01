@@ -110,7 +110,10 @@ module.exports = {
 						submitCallback: () => {
 							this.loadGame();
 						},
-						cancelCallback: null
+						cancelCallback: () => {
+							// history.back();
+							wx.closeWindow();
+						},
 					});
 				}
 			}, 1000);

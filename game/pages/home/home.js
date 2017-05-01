@@ -20,7 +20,6 @@ module.exports = {
 
 	created: function() {
 		$.getScript('../assets/js/lrz.all.bundle.js');
-		$.getScript('//cdn.bootcss.com/jsSHA/2.0.1/sha1.js');
 	},
 
 	mounted: function() {
@@ -102,6 +101,7 @@ module.exports = {
 			}
 
 			this.showGuideTips();
+			this.updateGameData();
 		},
 
 		pointerInTrashArea: function(pointer) {
@@ -118,15 +118,14 @@ module.exports = {
 			if (!hasGuide) {
 				setTimeout(() => {
 					notie.alert({ text: '记得分享给小伙伴们哦！' });
-					localStorage.setItem('hasGuide', 'true');
 				}, 5000);
+
+				localStorage.setItem('hasGuide', 'true');
 			}
 		},
 
 		start: function(event) {
 			$('#file-input').trigger('click');
-
-			// this.imgSrc = 'http://news.xinhuanet.com/fashion/2015-02/12/127483653_14236217073281n.jpg';
 		},
 
 		getInputImage: function(event) {
@@ -136,7 +135,7 @@ module.exports = {
 			fr.readAsDataURL(file);
 
 			fr.onprogress = (evt) => {
-				$('#start-button').val(`${evt.loaded / evt.total * 100} %`);
+				$('#start-button').text(`${evt.loaded / evt.total * 100} %`);
 			};
 
 			fr.onload = (evt) => {
@@ -146,7 +145,9 @@ module.exports = {
 
 				$('#start-button').remove();
 			};*/
-			
+
+			$('#start-button').text('载入中...');
+
 			lrz(file, { width: 750 }).then((rst) => {
 				let result = rst.base64;
 				this.imgSrc = result;
@@ -157,29 +158,28 @@ module.exports = {
 		},
 
 		uploadImage: function(fileName, fileData) {
-			if (utils.isWeixin()) {
+			/*if (utils.isWeixin())*/ {
 				let GameData = AV.Object.extend('GameData');
 
 				let gameData = new GameData();
 				gameData.set('openId', '');
-				// upload the image
-				gameData.set('image', new AV.File(fileName, fileData));
+				gameData.set('image', new AV.File(fileName, fileData));	// upload the image
 
 				gameData.save().then((data) => {
-					console.log(`image [${file.name}] uploaded`);
+					console.log(`image [${fileName}] uploaded`);
 					this.gameId = data.id;
 
+					// wechat share
+					$('#share-img').attr('src', data.get('image').get('url'));
+					history.replaceState({}, '', this.getShareUrl());
+
 					this.addWxShare(() => {
-						this.updateGameData();
-						notie.alert({ type: 1, text: '分享成功！' });
+						notie.alert({ text: '分享成功！' });
 					});
 				}, (error) => {
 					console.error(JSON.stringify(error));
 				});
 			}
-		},
-
-		getResultImage: function() {
 		},
 
 		getGameData: function() {
@@ -188,7 +188,7 @@ module.exports = {
 			const ratioW = $('#play-img').get(0).naturalWidth / $('#play-img').width();
 			const ratioH = $('#play-img').get(0).naturalHeight / $('#play-img').height();
 
-			let map = [];
+			let mapData = [];
 			$('.draggable').each((idx, ele) => {
 				let tag = ele.dataset.tag.split('-');
 				let type = tag[0], id = tag[1];
@@ -197,11 +197,11 @@ module.exports = {
 					ele = $(ele);
 					let x = (ele.position().left - ox) * ratioW | 0, y = (ele.position().top - oy) * ratioH | 0;
 					let w = ele.width(), h = ele.height();
-					map.push({ type, id, x, y, w, h });
+					mapData.push({ type, id, x, y, w, h });
 				}
 			});
 
-			return map;
+			return mapData;
 		},
 
 		updateGameData: function() {
@@ -232,15 +232,15 @@ module.exports = {
 				let signature = shaObj.getHash("HEX");
 
 				const wxConfig = {
-					debug: true,
-					appId: 'wx49ce3f064b234e21',
+					// debug: true,
+					appId: 'wxd5046a6af78fe36b',
 					timestamp: timestamp,
 					nonceStr: '1234567890',
 					signature: signature,
 					jsApiList: ['checkJsApi', 'showMenuItems', 'onMenuShareAppMessage', 'onMenuShareTimeline'],
 				};
 
-				const shareParam = {
+				let shareParam = {
 					title: '萌脸找茬', // 分享标题
 					desc: '快来挑战萌脸找茬吧！', // 分享描述
 					link: this.getShareUrl(), // 分享链接
@@ -267,7 +267,7 @@ module.exports = {
 				});
 
 				wx.error((error) => {
-					alert('wx error: ' + JSON.stringify(error));
+					// alert('wx error: ' + JSON.stringify(error));
 				});
 			}, (error) => {
 				console.error(JSON.stringify(error));

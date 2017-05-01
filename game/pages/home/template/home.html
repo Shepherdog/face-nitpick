@@ -1,7 +1,11 @@
 <div id="container">
-  <a id="start-button" class="button center" @click="start">Play!
+  <div style="display:none;">
+    <img id="share-img">
+  </div>
+  <div id="start-button" class="button center" @click="start">
     <input id="file-input" style="display:none;" type="file" @change="getInputImage" accept="image/*">
-  </a>
+    <span>开始!<span>
+  </div>
   <img id="play-img" class="img-responsive center" :src="imgSrc" v-show="!!imgSrc">
   <div class="docker"></div>
   <div class="draggable" data-tag="A"></div>
