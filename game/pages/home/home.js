@@ -101,7 +101,7 @@ module.exports = {
 			}
 
 			this.showGuideTips();
-			this.updateGameData();
+			// this.updateGameData();
 		},
 
 		pointerInTrashArea: function(pointer) {
@@ -170,10 +170,11 @@ module.exports = {
 					this.gameId = data.id;
 
 					// wechat share
-					$('#share-img').attr('src', data.get('image').get('url'));
-					history.replaceState({}, '', this.getShareUrl());
+					// $('#share-img').attr('src', data.get('image').get('url'));
+					// history.replaceState({}, '', this.getShareUrl());
 
 					this.addWxShare(() => {
+						this.updateGameData();
 						notie.alert({ text: '分享成功！' });
 					});
 				}, (error) => {
@@ -233,7 +234,7 @@ module.exports = {
 
 				const wxConfig = {
 					// debug: true,
-					appId: 'wxd5046a6af78fe36b',
+					appId: 'wx349d3ab053fb111f',
 					timestamp: timestamp,
 					nonceStr: '1234567890',
 					signature: signature,
@@ -267,7 +268,7 @@ module.exports = {
 				});
 
 				wx.error((error) => {
-					// alert('wx error: ' + JSON.stringify(error));
+					alert('wx error: ' + JSON.stringify(error));
 				});
 			}, (error) => {
 				console.error(JSON.stringify(error));
