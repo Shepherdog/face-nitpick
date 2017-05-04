@@ -13,8 +13,9 @@ module.exports = {
 	data: function() {
 		return {
 			draggables: null,
-			imgSrc: '',
 			gameId: '',
+			imgSrc: '',
+			imgUrl: '',
 		}
 	},
 
@@ -168,9 +169,9 @@ module.exports = {
 				gameData.save().then((data) => {
 					console.log(`image [${fileName}] uploaded`);
 					this.gameId = data.id;
+					this.imgUrl = data.get('image').get('url');
 
 					// wechat share
-					// $('#share-img').attr('src', data.get('image').get('url'));
 					// history.replaceState({}, '', this.getShareUrl());
 
 					this.addWxShare(() => {
@@ -242,10 +243,10 @@ module.exports = {
 				};
 
 				let shareParam = {
-					title: '萌脸找茬', // 分享标题
+					title: '萌脸找茬😊', // 分享标题
 					desc: '快来挑战萌脸找茬吧！', // 分享描述
 					link: this.getShareUrl(), // 分享链接
-					imgUrl: '', // 分享图标
+					imgUrl: this.imgUrl, // 分享图标
 				};
 
 				wx.config(wxConfig);
